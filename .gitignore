@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+backend/.env
+backend/secrets/
+backups/
+*.log
+*.tsbuildinfo
+.qa-tools/
+docs/qa/
+.DS_Store

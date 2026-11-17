@@ -1,0 +1,10 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { renderRevenuePdf } from '../dist/reports.js';
+const dir=path.resolve('../docs/qa');await fs.mkdir(dir,{recursive:true});
+const amounts={commerce_with_invoice:'500.00',commerce_without_invoice:'0.00',industry_with_invoice:'0.00',industry_without_invoice:'0.00',services_with_invoice:'1500.00',services_without_invoice:'0.00'};
+const rows=Array.from({length:12},(_,i)=>({month:'2025-'+String(i+1).padStart(2,'0'),amount:'2000.00',breakdown:amounts,documents:[{title:'Relatório contábil de conferência — exemplo de validação',filename:'notas-e-extrato.pdf'}]}));
+const base={client:{name:'Empresa de validação',legal_name:'Empresa de validação de relatórios',cnpj:'12.345.678/0001-95',type:'MEI',city:'Porto Alegre',state:'RS'},organization:{name:'GB Soluções',crc:'RS-107227/0'},missing:[],unclassified:[],unsupported:[],complete:true,year_open:false,had_employee:false,employee_missing:false};
+await fs.writeFile(path.join(dir,'relatorio-mensal.pdf'),await renderRevenuePdf({...base,kind:'monthly',period:'2025-11',rows:[rows[10]],total:'2000.00',commerce:'500.00',services:'1500.00'},1));
+await fs.writeFile(path.join(dir,'relatorio-anual.pdf'),await renderRevenuePdf({...base,kind:'annual',period:'2025',rows,total:'24000.00',commerce:'6000.00',services:'18000.00'},1));
+console.log('PDFs de validação gerados em docs/qa. Nenhum dado de produção foi utilizado.');
